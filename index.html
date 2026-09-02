@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mzamo Child Guidance & Training Initiative</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .hero-with-image {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .hero-with-image .hero-image img {
+            width: 100%;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            object-fit: cover;
+            max-height: 450px;
+        }
+        .hero-with-image .hero-image {
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        @media (max-width: 768px) {
+            .hero-with-image {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-with-image .hero-image {
+                order: -1;
+            }
+            .hero-with-image .hero-image img {
+                max-height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVIGATION ===== -->
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>🌟 Mzamo Child Guidance</h1>
+                <span>Training Initiative of KZN • Est. 1981</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="news.html">News</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="admin-login.html" class="admin-link">Admin</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ===== HERO SECTION WITH IMAGE ===== -->
+    <section class="hero">
+        <div class="hero-with-image">
+            <div>
+                <h2>Supporting Children with Disabilities Since 1981</h2>
+                <h1>Empowering <span class="highlight">Children</span>,<br>Strengthening <span class="highlight">Families</span></h1>
+                <p>We provide holistic, inter-disciplinary care for children with disabilities, empowering families and communities across KwaZulu-Natal.</p>
+                <div class="btn-group">
+                    <a href="about.html" class="btn-primary">Learn More</a>
+                    <a href="contact.html" class="btn-secondary">Get Involved</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="./assets/images/hero-image.jpg" alt="Children at Mzamo Child Guidance">
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== STATS SECTION ===== -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="number">44+</span>
+                <span class="label">Years of Service</span>
+            </div>
+            <div class="stat-item">
+                <span class="number">300+</span>
+                <span class="label">Beneficiaries Served</span>
+            </div>
+            <div class="stat-item">
+                <span class="number">6</span>
+                <span class="label">Professional Services</span>
+            </div>
+            <div class="stat-item">
+                <span class="number">Multiple</span>
+                <span class="label">Satellite Offices</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ABOUT PREVIEW ===== -->
+    <section class="about-preview">
+        <div class="about-text">
+            <h2>About <span class="highlight">Mzamo</span></h2>
+            <p>Mzamo Child Guidance & Training Initiative of KZN was established in <strong>January 1981</strong> in response to the critical need for services for vulnerable children with disabilities in Black communities.</p>
+            <p>We use an <strong>inter-disciplinary approach</strong> to ensure each child is properly assessed and supported for their maximum development.</p>
+            <a href="about.html" class="btn-outline">Read More →</a>
+        </div>
+    </section>
+
+    <!-- ===== SERVICES PREVIEW ===== -->
+    <section class="services">
+        <h2 class="section-title">Our Services</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <h3>Welfare Services</h3>
+                <p>Psychological, social, physical, and cognitive development support.</p>
+            </div>
+            <div class="service-card">
+                <h3>Professional Assessments</h3>
+                <p>Multi-disciplinary evaluations by qualified professionals.</p>
+            </div>
+            <div class="service-card">
+                <h3>Parent Training</h3>
+                <p>Workshops for parents and caregivers of children with cerebral palsy.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Mzamo Child Guidance & Training Initiative of KZN. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

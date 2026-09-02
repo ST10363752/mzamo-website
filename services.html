@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services - Mzamo Child Guidance</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .services-full {
+            padding: 60px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .service-item {
+            display: flex;
+            gap: 25px;
+            background: var(--white);
+            padding: 25px 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            align-items: center;
+            transition: var(--transition);
+            border-left: 4px solid var(--secondary);
+        }
+        .service-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-hover);
+        }
+        .service-item .service-icon {
+            font-size: 2.8rem;
+            flex-shrink: 0;
+            width: 60px;
+            text-align: center;
+        }
+        .service-item .service-icon img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .service-item h3 {
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+        .service-item p {
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+        }
+        @media (max-width: 768px) {
+            .service-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px;
+            }
+            .service-item .service-icon {
+                font-size: 2.2rem;
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>🌟 Mzamo Child Guidance</h1>
+                <span>Training Initiative of KZN • Est. 1981</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="services.html" class="active">Services</a></li>
+                <li><a href="news.html">News</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="admin-login.html" class="admin-link">Admin</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="page-header">
+        <h1>Our Services</h1>
+        <p>Comprehensive, professional services for children with disabilities and their families.</p>
+    </section>
+
+    <section class="services-full">
+        <div class="service-item">
+            <div class="service-icon">
+            </div>
+            <div>
+                <h3>Welfare Services</h3>
+                <p>Psychological, social, physical, and cognitive development support for children with disabilities.</p>
+            </div>
+        </div>
+
+        <div class="service-item">
+            <div class="service-icon"></div>
+            <div>
+                <h3>Professional Assessments</h3>
+                <p>Multi-disciplinary evaluations by Social Workers, Paediatricians, Psychologists, and Therapists.</p>
+            </div>
+        </div>
+
+        <div class="service-item">
+            <div class="service-icon"></div>
+            <div>
+                <h3>Parent & Caregiver Training</h3>
+                <p>Workshops on caring for children with cerebral palsy, home stimulation, and ongoing support.</p>
+            </div>
+        </div>
+
+        <div class="service-item">
+            <div class="service-icon"></div>
+            <div>
+                <h3>Therapeutic Groups</h3>
+                <p>Support for children with learning barriers and low self-esteem through group facilitation.</p>
+            </div>
+        </div>
+
+        <div class="service-item">
+            <div class="service-icon"></div>
+            <div>
+                <h3>Awareness Programmes</h3>
+                <p>Community education on social issues and the rights of children with disabilities.</p>
+            </div>
+        </div>
+
+        <div class="service-item">
+            <div class="service-icon"></div>
+            <div>
+                <h3>Family Empowerment</h3>
+                <p>Skills training, support groups, and ongoing assistance for families.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Mzamo Child Guidance & Training Initiative of KZN. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

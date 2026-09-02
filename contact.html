@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Mzamo Child Guidance</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>Mzamo Child Guidance</h1>
+                <span>Training Initiative of KZN • Est. 1981</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="news.html">News</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+                <li><a href="admin-login.html" class="admin-link">Admin</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="page-header">
+        <h1>Contact Us</h1>
+        <p>Get in touch to learn more or support our work.</p>
+    </section>
+
+    <section class="contact-section">
+        <div class="contact-form">
+            <h2>Send Us a Message</h2>
+            <form id="enquiryForm">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" placeholder="Enter your email address" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="Enter your phone number (optional)">
+                </div>
+                <div class="form-group">
+                    <label for="message">Message *</label>
+                    <textarea id="message" rows="5" placeholder="Tell us how we can help..." required></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Submit Enquiry</button>
+                <div id="formMessage" class="form-message"></div>
+            </form>
+        </div>
+        <div class="contact-details">
+            <h2>Get in Touch</h2>
+            <p><strong></strong> KwaZulu-Natal, South Africa</p>
+            <p><strong></strong> info@mzamochildguidance.org</p>
+            <p><strong></strong> 062 412 3154</p>
+            <p><strong></strong> Monday - Friday: 8:00 AM - 4:00 PM</p>
+            <p><strong></strong> Saturday: By appointment</p>
+            
+            <!-- WhatsApp Button -->
+            <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #e8e8e8;">
+                <a href="https://wa.me/27624123154?text=Hello%20Mzamo%20Child%20Guidance%2C%20I%20would%20like%20to%20enquire%20about%20your%20services." 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   style="display: inline-flex; align-items: center; gap: 10px; background: #25d366; color: white; padding: 12px 24px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;">
+                    <span style="font-size: 1.4rem;"></span>
+                    Chat on WhatsApp
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Mzamo Child Guidance & Training Initiative of KZN. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/contact.js"></script>
+    
+    <!-- ===== WHATSAPP FLOATING BUTTON ===== -->
+    <style>
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25d366;
+            color: white;
+            border-radius: 50px;
+            padding: 14px 22px;
+            font-size: 1rem;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+            z-index: 999;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            border: none;
+            cursor: pointer;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
+            background: #20b85a;
+        }
+        .whatsapp-float .icon {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+        .whatsapp-float .text {
+            display: inline-block;
+        }
+        @media (max-width: 480px) {
+            .whatsapp-float {
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 18px;
+                font-size: 0.85rem;
+            }
+            .whatsapp-float .text {
+                display: none;
+            }
+            .whatsapp-float .icon {
+                font-size: 2rem;
+            }
+            .whatsapp-float {
+                border-radius: 50%;
+                padding: 16px;
+                width: 60px;
+                height: 60px;
+                justify-content: center;
+            }
+        }
+    </style>
+
+    <a href="https://wa.me/27624123154?text=Hello%20Mzamo%20Child%20Guidance%2C%20I%20would%20like%20to%20enquire%20about%20your%20services." 
+       class="whatsapp-float" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       aria-label="Chat on WhatsApp">
+        <span class="icon"></span>
+        <span class="text">Chat with us</span>
+    </a>
+</body>
+</html>

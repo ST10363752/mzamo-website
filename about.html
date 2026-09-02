@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Mzamo Child Guidance</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: start;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        .about-grid .about-image img {
+            width: 100%;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .about-grid .about-image .placeholder {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: var(--off-white);
+            border-radius: var(--radius);
+            border: 2px dashed #ddd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--mid-gray);
+        }
+        .about-grid .about-image .placeholder .icon {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .about-grid h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin: 30px 0 10px;
+        }
+        .about-grid h2:first-of-type {
+            margin-top: 0;
+        }
+        .about-grid p {
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+        }
+        .about-grid ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 0;
+        }
+        .about-grid ul li {
+            padding: 10px 18px;
+            background: var(--off-white);
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .about-grid ul li::before {
+            content: '✓ ';
+            color: var(--secondary);
+            font-weight: 700;
+        }
+        @media (max-width: 768px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+            .about-grid .about-image {
+                order: -1;
+            }
+            .about-grid ul {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .about-grid ul {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>🌟 Mzamo Child Guidance</h1>
+                <span>Training Initiative of KZN • Est. 1981</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html" class="active">About Us</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="news.html">News</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="admin-login.html" class="admin-link">Admin</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="page-header">
+        <h1>About Us</h1>
+        <p>Learn about our history, mission, and the communities we serve.</p>
+    </section>
+
+    <div class="about-grid">
+        <div>
+            <h2>Our Story</h2>
+            <p>Mzamo Child Guidance & Training Initiative of KZN was established in <strong>January 1981</strong> in response to the significant need for services for vulnerable children with disabilities, particularly within Black communities.</p>
+            <p>The organisation was founded following efforts by the <strong>Social Workers Association</strong> to respond to these critical needs.</p>
+
+            <h2>Our Mission</h2>
+            <p>We focus on the child in conjunction with the family and community, using an <strong>inter-disciplinary approach</strong> to ensure proper assessment, referral, and placement for maximum development and gain.</p>
+
+            <h2>Our Approach</h2>
+            <p>We use a holistic approach that encompasses assessments by various professionals, including:</p>
+            <ul>
+                <li>Social Workers</li>
+                <li>Paediatricians</li>
+                <li>Educational Psychologists</li>
+                <li>Speech Therapists</li>
+                <li>Occupational Therapists</li>
+                <li>Physiotherapists</li>
+            </ul>
+        </div>
+        <div class="about-image">
+            <img src="assets/images/about-image.jpg" alt="Mzamo Child Guidance team">
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Mzamo Child Guidance & Training Initiative of KZN. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

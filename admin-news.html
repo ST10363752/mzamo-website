@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage News - Mzamo Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ===== ADMIN CONTENT ===== */
+        .admin-content {
+            padding: 30px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .admin-content h1 {
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+        .admin-content .subtitle {
+            color: var(--mid-gray);
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        /* ===== ADD FORM ===== */
+        .add-form {
+            background: white;
+            padding: 30px 35px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: none;
+            animation: slideDown 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+        .add-form.show {
+            display: block;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .add-form .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .add-form .form-header h2 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        .add-form .form-header .form-id {
+            color: var(--mid-gray);
+            font-size: 0.8rem;
+        }
+        .add-form .form-group {
+            margin-bottom: 18px;
+        }
+        .add-form .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #333;
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
+        }
+        .add-form .form-group label .required {
+            color: #dc3545;
+            margin-left: 2px;
+        }
+        .add-form .form-group input,
+        .add-form .form-group select,
+        .add-form .form-group textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid #d8d8d8;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background: #fafafa;
+            font-family: inherit;
+            color: #333;
+        }
+        .add-form .form-group input:focus,
+        .add-form .form-group select:focus,
+        .add-form .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(26, 74, 107, 0.08);
+        }
+        .add-form .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .add-form .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .add-form .form-actions .btn-primary {
+            padding: 11px 35px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .add-form .form-actions .btn-secondary-form {
+            padding: 11px 30px;
+            background: #f0f0f0;
+            color: #555;
+            border: 1px solid #d8d8d8;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .add-form .form-actions .btn-secondary-form:hover {
+            background: #e0e0e0;
+            color: #333;
+        }
+        .add-form .form-message {
+            margin-top: 15px;
+            padding: 12px 16px;
+            border-radius: 6px;
+            display: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .add-form .form-message.success {
+            display: block;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+        .add-form .form-message.error {
+            display: block;
+            background: #fbe9e7;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        /* ===== BUTTONS ===== */
+        .add-btn {
+            padding: 12px 30px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+        }
+        .add-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(26, 74, 107, 0.3);
+        }
+        .add-btn.active {
+            background: #dc3545;
+        }
+        .add-btn.active:hover {
+            background: #c82333;
+        }
+
+        /* ===== TABLE ===== */
+        .table-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .admin-table th {
+            background: #f8f9fa;
+            color: #444;
+            padding: 14px 18px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e8e8e8;
+        }
+        .admin-table td {
+            padding: 13px 18px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+            color: #444;
+        }
+        .admin-table tr:hover {
+            background: #fafbfc;
+        }
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ===== STATUS BADGES ===== */
+        .status-badge {
+            display: inline-block;
+            padding: 3px 14px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .status-published {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .status-draft {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .status-upcoming {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+
+        /* ===== ACTION BUTTONS ===== */
+        .actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .actions button {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .actions .btn-edit {
+            background: #ffc107;
+            color: #333;
+        }
+        .actions .btn-edit:hover {
+            background: #e0a800;
+        }
+        .actions .btn-toggle {
+            background: #17a2b8;
+            color: white;
+        }
+        .actions .btn-toggle:hover {
+            background: #138496;
+        }
+        .actions .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        .actions .btn-delete:hover {
+            background: #c82333;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--mid-gray);
+        }
+        .empty-state .icon {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 15px;
+            color: #d0d0d0;
+        }
+        .empty-state h3 {
+            color: var(--dark-gray);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+
+        /* ===== BACK LINK ===== */
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: var(--primary);
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .back-link:hover {
+            color: var(--secondary);
+        }
+        .back-link::before {
+            content: '← ';
+        }
+
+        /* ===== TABLE COUNT ===== */
+        .table-count {
+            padding: 12px 18px;
+            background: #fafbfc;
+            font-size: 0.85rem;
+            color: var(--mid-gray);
+            border-top: 1px solid #f0f0f0;
+        }
+        .table-count strong {
+            color: var(--dark-gray);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .add-form {
+                padding: 20px;
+            }
+            .admin-table {
+                font-size: 0.8rem;
+            }
+            .admin-table th,
+            .admin-table td {
+                padding: 10px 12px;
+            }
+            .actions button {
+                padding: 3px 8px;
+                font-size: 0.6rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .admin-content h1 {
+                font-size: 1.5rem;
+            }
+            .add-form {
+                padding: 15px;
+            }
+            .admin-table {
+                font-size: 0.7rem;
+            }
+            .admin-table th,
+            .admin-table td {
+                padding: 8px 10px;
+            }
+            .add-form .form-actions {
+                flex-direction: column;
+            }
+            .add-form .form-actions .btn-primary,
+            .add-form .form-actions .btn-secondary-form {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body class="admin-body">
+
+    <header class="admin-header">
+        <nav class="admin-nav">
+            <h1>Mzamo Admin</h1>
+            <ul class="admin-nav-links">
+                <li><a href="admin-dashboard.html">Dashboard</a></li>
+                <li><a href="admin-programmes.html">Programmes</a></li>
+                <li><a href="admin-news.html" class="active">News</a></li>
+                <li><a href="admin-reports.html">Reports</a></li>
+                <li><a href="admin-enquiries.html">Enquiries</a></li>
+                <li><a href="admin-login.html" id="logoutBtn">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="admin-content">
+        <h1>News & Updates</h1>
+        <p class="subtitle">Create, edit, or remove news articles and updates.</p>
+
+        <button class="add-btn" id="showAddBtn">+ Add New Article</button>
+
+        <!-- ===== ADD/EDIT FORM ===== -->
+        <div class="add-form" id="addForm">
+            <div class="form-header">
+                <h2 id="formTitle">Add New Article</h2>
+                <span class="form-id" id="formId"></span>
+            </div>
+            <form id="newsForm">
+                <div class="form-group">
+                    <label for="newsTitle">Article Title <span class="required">*</span></label>
+                    <input type="text" id="newsTitle" placeholder="Enter article title" required>
+                </div>
+                <div class="form-group">
+                    <label for="newsContent">Content <span class="required">*</span></label>
+                    <textarea id="newsContent" placeholder="Enter the full article content..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="newsStatus">Status</label>
+                    <select id="newsStatus">
+                        <option value="Published">Published</option>
+                        <option value="Draft">Draft</option>
+                        <option value="Upcoming">Upcoming</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" id="formSubmitBtn">Add Article</button>
+                    <button type="button" class="btn-secondary-form" id="cancelFormBtn">Cancel</button>
+                </div>
+                <div id="formMessage" class="form-message"></div>
+            </form>
+        </div>
+
+        <!-- ===== NEWS TABLE ===== -->
+        <div id="newsContainer">
+            <!-- News loaded by JavaScript -->
+        </div>
+
+        <a href="admin-dashboard.html" class="back-link">Back to Dashboard</a>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script>
+        // ============================================================
+        // NEWS MANAGEMENT
+        // ============================================================
+
+        let newsItems = [];
+        let editingIndex = -1;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadNews();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('showAddBtn').addEventListener('click', function() {
+                resetForm();
+                document.getElementById('addForm').classList.toggle('show');
+                if (document.getElementById('addForm').classList.contains('show')) {
+                    this.textContent = '− Cancel';
+                    this.classList.add('active');
+                } else {
+                    this.textContent = '+ Add New Article';
+                    this.classList.remove('active');
+                }
+            });
+
+            document.getElementById('cancelFormBtn').addEventListener('click', function() {
+                document.getElementById('addForm').classList.remove('show');
+                document.getElementById('showAddBtn').textContent = '+ Add New Article';
+                document.getElementById('showAddBtn').classList.remove('active');
+                resetForm();
+            });
+
+            document.getElementById('newsForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveNews();
+            });
+        }
+
+        function saveNews() {
+            const title = document.getElementById('newsTitle').value.trim();
+            const content = document.getElementById('newsContent').value.trim();
+            const status = document.getElementById('newsStatus').value;
+            const messageDiv = document.getElementById('formMessage');
+
+            if (!title) {
+                showFormMessage('Please enter an article title.', 'error');
+                return;
+            }
+            if (!content) {
+                showFormMessage('Please enter the article content.', 'error');
+                return;
+            }
+
+            let newsItems = JSON.parse(localStorage.getItem('newsItems') || '[]');
+
+            if (editingIndex === -1) {
+                newsItems.push({
+                    id: Date.now(),
+                    title: title,
+                    content: content,
+                    status: status,
+                    date: new Date().toISOString()
+                });
+                showFormMessage('Article added successfully.', 'success');
+            } else {
+                newsItems[editingIndex].title = title;
+                newsItems[editingIndex].content = content;
+                newsItems[editingIndex].status = status;
+                showFormMessage('Article updated successfully.', 'success');
+                editingIndex = -1;
+                document.getElementById('formSubmitBtn').textContent = 'Add Article';
+                document.getElementById('formTitle').textContent = 'Add New Article';
+            }
+
+            localStorage.setItem('newsItems', JSON.stringify(newsItems));
+            localStorage.setItem('newsCount', newsItems.length);
+
+            loadNews();
+            updateDashboardCount();
+
+            setTimeout(() => {
+                document.getElementById('addForm').classList.remove('show');
+                document.getElementById('showAddBtn').textContent = '+ Add New Article';
+                document.getElementById('showAddBtn').classList.remove('active');
+                resetForm();
+            }, 1500);
+        }
+
+        function loadNews() {
+            const container = document.getElementById('newsContainer');
+            newsItems = JSON.parse(localStorage.getItem('newsItems') || '[]');
+            
+            if (newsItems.length === 0) {
+                const defaultNews = [
+                    {
+                        id: 1,
+                        title: 'Community Workshop on Cerebral Palsy Care',
+                        content: 'We are hosting a comprehensive training workshop for parents and caregivers of children with cerebral palsy. The workshop will cover home stimulation techniques, professional support options, and practical care strategies.',
+                        status: 'Upcoming',
+                        date: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        title: 'New Partnership with Local Healthcare Providers',
+                        content: 'We are strengthening our inter-disciplinary approach through new partnerships with local healthcare providers. This will expand our professional network and improve access to specialised services.',
+                        status: 'Draft',
+                        date: new Date().toISOString()
+                    },
+                    {
+                        id: 3,
+                        title: 'Awareness Campaign: Children\'s Rights',
+                        content: 'We are planning a community awareness campaign focusing on the rights of children with disabilities in South Africa, promoting a more caring and inclusive society.',
+                        status: 'Draft',
+                        date: new Date().toISOString()
+                    },
+                    {
+                        id: 4,
+                        title: 'Annual General Meeting Report Available',
+                        content: 'Our Annual General Meeting report is now available, highlighting our achievements, community impact, and plans for the coming year.',
+                        status: 'Published',
+                        date: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem('newsItems', JSON.stringify(defaultNews));
+                localStorage.setItem('newsCount', defaultNews.length);
+                newsItems = defaultNews;
+            }
+
+            if (newsItems.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <span class="icon">📰</span>
+                        <h3>No News Articles</h3>
+                        <p>Add your first article using the button above.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let tableHTML = `
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Content</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            newsItems.forEach((item, index) => {
+                const statusClass = item.status === 'Published' ? 'status-published' : 
+                                   item.status === 'Draft' ? 'status-draft' : 'status-upcoming';
+                const date = new Date(item.date);
+                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                const contentPreview = item.content.length > 80 ? item.content.substring(0, 80) + '...' : item.content;
+                
+                tableHTML += `
+                    <tr>
+                        <td><strong>${escapeHtml(item.title)}</strong></td>
+                        <td>${escapeHtml(contentPreview)}</td>
+                        <td style="font-size:0.8rem; white-space:nowrap;">${formattedDate}</td>
+                        <td><span class="status-badge ${statusClass}">${item.status}</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-edit" onclick="editNews(${index})">Edit</button>
+                                <button class="btn-toggle" onclick="toggleStatus(${index})">Toggle</button>
+                                <button class="btn-delete" onclick="deleteNews(${index})">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                        </tbody>
+                    </table>
+                    <div class="table-count">Total: <strong>${newsItems.length}</strong> article(s)</div>
+                </div>
+            `;
+
+            container.innerHTML = tableHTML;
+        }
+
+        function editNews(index) {
+            const item = newsItems[index];
+            if (!item) return;
+
+            editingIndex = index;
+            document.getElementById('newsTitle').value = item.title;
+            document.getElementById('newsContent').value = item.content;
+            document.getElementById('newsStatus').value = item.status;
+            document.getElementById('formTitle').textContent = 'Edit Article';
+            document.getElementById('formSubmitBtn').textContent = 'Update Article';
+            document.getElementById('addForm').classList.add('show');
+            document.getElementById('showAddBtn').textContent = '− Cancel';
+            document.getElementById('showAddBtn').classList.add('active');
+            document.getElementById('formMessage').style.display = 'none';
+            document.getElementById('addForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function toggleStatus(index) {
+            const item = newsItems[index];
+            if (!item) return;
+            
+            const statuses = ['Published', 'Draft', 'Upcoming'];
+            const currentIndex = statuses.indexOf(item.status);
+            item.status = statuses[(currentIndex + 1) % statuses.length];
+            
+            localStorage.setItem('newsItems', JSON.stringify(newsItems));
+            loadNews();
+        }
+
+        function deleteNews(index) {
+            if (!confirm('Are you sure you want to delete this article?')) return;
+            newsItems.splice(index, 1);
+            localStorage.setItem('newsItems', JSON.stringify(newsItems));
+            localStorage.setItem('newsCount', newsItems.length);
+            loadNews();
+            updateDashboardCount();
+        }
+
+        function resetForm() {
+            document.getElementById('newsForm').reset();
+            document.getElementById('formMessage').style.display = 'none';
+            editingIndex = -1;
+            document.getElementById('formTitle').textContent = 'Add New Article';
+            document.getElementById('formSubmitBtn').textContent = 'Add Article';
+            document.getElementById('formId').textContent = '';
+        }
+
+        function showFormMessage(text, type) {
+            const messageDiv = document.getElementById('formMessage');
+            messageDiv.textContent = text;
+            messageDiv.className = 'form-message ' + type;
+            messageDiv.style.display = 'block';
+            setTimeout(() => { messageDiv.style.display = 'none'; }, 4000);
+        }
+
+        function updateDashboardCount() {
+            localStorage.setItem('newsCount', newsItems.length);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        console.log('News system loaded successfully.');
+        console.log('Total articles:', newsItems.length);
+    </script>
+</body>
+</html>

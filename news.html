@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News - Mzamo Child Guidance</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .news-section {
+            padding: 60px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .news-item {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 25px;
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary-light);
+            transition: var(--transition);
+            align-items: start;
+        }
+        .news-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-hover);
+        }
+        .news-item .news-image img {
+            width: 100%;
+            border-radius: 8px;
+            object-fit: cover;
+            aspect-ratio: 4/3;
+        }
+        .news-item .news-image .placeholder {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: var(--off-white);
+            border-radius: 8px;
+            border: 2px dashed #ddd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--mid-gray);
+            font-size: 0.8rem;
+        }
+        .news-item .news-image .placeholder .icon {
+            font-size: 2.5rem;
+            display: block;
+        }
+        .news-item h3 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        .news-item .news-meta {
+            color: var(--mid-gray);
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        .news-item p {
+            color: var(--dark-gray);
+        }
+        @media (max-width: 768px) {
+            .news-item {
+                grid-template-columns: 1fr;
+            }
+            .news-item .news-image {
+                order: -1;
+            }
+            .news-item .news-image img {
+                max-height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>🌟 Mzamo Child Guidance</h1>
+                <span>Training Initiative of KZN • Est. 1981</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="news.html" class="active">News</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="admin-login.html" class="admin-link">Admin</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="page-header">
+        <h1>News & Updates</h1>
+        <p>Stay informed about our activities, events, and community impact.</p>
+    </section>
+
+    <section class="news-section">
+
+        <!-- ===== NEWS ITEM 1: Community Workshop ===== -->
+        <div class="news-item">
+            <div class="news-image">
+                <img src="assets/images/news-workshop.jpg" alt="Community Workshop on Cerebral Palsy Care">
+            </div>
+            <div>
+                <h3>Community Workshop on Cerebral Palsy Care</h3>
+                <p class="news-meta">Coming Soon |  KwaZulu-Natal</p>
+                <p>We are hosting a comprehensive training workshop for parents and caregivers of children with cerebral palsy. The workshop will cover home stimulation techniques, professional support options, and practical care strategies.</p>
+            </div>
+        </div>
+
+        <!-- ===== NEWS ITEM 2: Partnership ===== -->
+        <div class="news-item">
+            <div class="news-image">
+                <img src="assets/images/news-partnership.jpg" alt="New Partnership with Local Healthcare Providers">
+            </div>
+            <div>
+                <h3>New Partnership with Local Healthcare Providers</h3>
+                <p class="news-meta">Coming Soon</p>
+                <p>We are strengthening our inter-disciplinary approach through new partnerships with local healthcare providers. This will expand our professional network and improve access to specialised services.</p>
+            </div>
+        </div>
+
+        <!-- ===== NEWS ITEM 3: Awareness Campaign ===== -->
+        <div class="news-item">
+            <div class="news-image">
+                <img src="assets/images/news-campaign.jpg" alt="Awareness Campaign for Children's Rights">
+            </div>
+            <div>
+                <h3>Awareness Campaign: Children's Rights</h3>
+                <p class="news-meta">Coming Soon</p>
+                <p>We are planning a community awareness campaign focusing on the rights of children with disabilities in South Africa, promoting a more caring and inclusive society.</p>
+            </div>
+        </div>
+
+        <!-- ===== NEWS ITEM 4: AGM Report ===== -->
+        <div class="news-item">
+            <div class="news-image">
+                <img src="assets/images/news-agm.jpg" alt="Annual General Meeting Report Available">
+            </div>
+            <div>
+                <h3>Annual General Meeting Report Available</h3>
+                <p class="news-meta">Coming Soon</p>
+                <p>Our Annual General Meeting report is now available, highlighting our achievements, community impact, and plans for the coming year.</p>
+            </div>
+        </div>
+
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Mzamo Child Guidance & Training Initiative of KZN. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
