@@ -1,0 +1,24 @@
+{
+  "name": "mzamo-website",
+  "version": "1.0.0",
+  "description": "Mzamo Child Guidance & Training Initiative of KZN",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ST10363752/mzamo-website.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ST10363752/mzamo-website/issues"
+  },
+  "homepage": "https://github.com/ST10363752/mzamo-website#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.3"
+  }
+}

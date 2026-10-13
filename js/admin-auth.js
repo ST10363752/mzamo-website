@@ -1,5 +1,5 @@
 // ============================================================
-// MZAMO CHILD GUIDANCE - ADMIN AUTHENTICATION
+// MZAMO CHILD GUIDANCE - ADMIN AUTHENTICATION (SUPABASE)
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -8,41 +8,70 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ===== LOGIN FUNCTIONALITY =====
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const email = document.getElementById('adminEmail').value.trim();
             const password = document.getElementById('adminPassword').value.trim();
 
-            // Demo credentials
-            const DEMO_EMAIL = 'admin@mzamo.org';
-            const DEMO_PASSWORD = 'admin123';
+            if (!email || !password) {
+                showMessage('Please enter both email and password.', 'error');
+                return;
+            }
 
-            if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
-                // Store login session
-                sessionStorage.setItem('adminLoggedIn', 'true');
-                sessionStorage.setItem('adminEmail', email);
+            // Show loading
+            const submitBtn = loginForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Logging in...';
+            submitBtn.disabled = true;
 
+            try {
+                // Sign in with Supabase Auth
+                const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) {
+                    console.error('Login error:', error);
+                    showMessage('Invalid email or password. Please try again.', 'error');
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                    return;
+                }
+
+                console.log('Login successful:', data.user.email);
                 showMessage('Login successful! Redirecting...', 'success');
 
-                // Redirect to dashboard
                 setTimeout(function() {
                     window.location.href = 'admin-dashboard.html';
-                }, 1500);
-            } else {
-                showMessage('Invalid email or password. Please try again.', 'error');
-                document.getElementById('adminPassword').value = '';
-                document.getElementById('adminPassword').focus();
+                }, 1000);
+
+            } catch (err) {
+                console.error('Error:', err);
+                showMessage('An unexpected error occurred.', 'error');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
             }
         });
     }
 
-    // ===== CHECK LOGIN STATUS =====
-    function checkAuth() {
-        const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
-        const currentPage = window.location.pathname;
+    // ===== CHECK AUTH STATUS ON ADMIN PAGES =====
+    checkAuth();
 
-        // List of admin pages
+    // ===== LOGOUT FUNCTIONALITY =====
+    const logoutBtn = document.getElementById('logoutBtn') || document.getElementById('adminLogoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            await window.supabaseClient.auth.signOut();
+            window.location.href = 'admin-login.html';
+        });
+    }
+
+    // ===== AUTH CHECK FUNCTION =====
+    async function checkAuth() {
+        const currentPage = window.location.pathname;
         const adminPages = [
             'admin-dashboard.html',
             'admin-programmes.html',
@@ -53,28 +82,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const isAdminPage = adminPages.some(page => currentPage.includes(page));
 
-        if (isAdminPage && isLoggedIn !== 'true') {
-            window.location.href = 'admin-login.html';
-        }
+        if (isAdminPage) {
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
 
-        if (isAdminPage && isLoggedIn === 'true') {
-            const nameSpan = document.getElementById('adminName');
-            if (nameSpan) {
-                const email = sessionStorage.getItem('adminEmail');
-                nameSpan.textContent = email ? email.split('@')[0] : 'Administrator';
+            if (!session) {
+                window.location.href = 'admin-login.html';
+                return;
             }
-        }
-    }
 
-    // ===== LOGOUT FUNCTIONALITY =====
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            sessionStorage.removeItem('adminLoggedIn');
-            sessionStorage.removeItem('adminEmail');
-            window.location.href = 'admin-login.html';
-        });
+            // Display admin name
+            const nameSpan = document.getElementById('adminName');
+            if (nameSpan && session.user) {
+                nameSpan.textContent = session.user.email.split('@')[0];
+            }
+
+            console.log('Admin authenticated:', session.user.email);
+        }
     }
 
     // ===== HELPER FUNCTION =====
@@ -85,7 +108,4 @@ document.addEventListener('DOMContentLoaded', function() {
             loginMessage.style.display = 'block';
         }
     }
-
-    // ===== CHECK AUTH ON PAGE LOAD =====
-    checkAuth();
 });
