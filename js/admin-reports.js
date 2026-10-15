@@ -5,9 +5,8 @@
 let reports = [];
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Only run if we're on the reports page
-    const reportsContainer = document.getElementById('reportsContainer');
-    if (!reportsContainer) return;
+    const container = document.getElementById('reportsContainer');
+    if (!container) return;
 
     loadReports();
     setupEventListeners();
@@ -61,8 +60,12 @@ async function uploadReport() {
         showUploadMessage('Please enter a report title.', 'error');
         return;
     }
+    if (title.length < 3) {
+        showUploadMessage('Report title is too short.', 'error');
+        return;
+    }
     if (!fileInput.files || fileInput.files.length === 0) {
-        showUploadMessage('Please select a file.', 'error');
+        showUploadMessage('Please select a file to upload.', 'error');
         return;
     }
 
@@ -70,6 +73,13 @@ async function uploadReport() {
 
     if (file.size > 5 * 1024 * 1024) {
         showUploadMessage('File is too large. Maximum size is 5MB.', 'error');
+        return;
+    }
+
+    const allowedTypes = ['application/pdf', 'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(file.type)) {
+        showUploadMessage('Only PDF, DOC, and DOCX files are allowed.', 'error');
         return;
     }
 
@@ -83,11 +93,7 @@ async function uploadReport() {
             .from('reports')
             .upload(fileName, file);
 
-        if (uploadError) {
-            console.error('Upload error:', uploadError);
-            showUploadMessage('Error uploading file: ' + uploadError.message, 'error');
-            return;
-        }
+        if (uploadError) throw uploadError;
 
         const { data: urlData } = window.supabaseClient
             .storage
@@ -119,7 +125,7 @@ async function uploadReport() {
 
     } catch (error) {
         console.error('Error uploading report:', error);
-        showUploadMessage('Error uploading report. Please try again.', 'error');
+        showUploadMessage(getFriendlyError(error), 'error');
     }
 }
 
@@ -169,7 +175,7 @@ async function loadReports() {
 
     } catch (error) {
         console.error('Error loading reports:', error);
-        container.innerHTML = '<div class="empty-state"><h3>Error</h3><p>Could not load reports.</p></div>';
+        container.innerHTML = '<div class="empty-state"><h3>Error</h3><p>' + getFriendlyError(error) + '</p></div>';
     }
 }
 
@@ -194,17 +200,14 @@ async function deleteReport(id) {
 
     } catch (error) {
         console.error('Error deleting report:', error);
-        alert('Error deleting report.');
+        showGlobalError(getFriendlyError(error));
     }
 }
 
 function showUploadMessage(text, type) {
     const messageDiv = document.getElementById('uploadMessage');
     if (!messageDiv) return;
-    messageDiv.textContent = text;
-    messageDiv.className = 'form-message ' + type;
-    messageDiv.style.display = 'block';
-    setTimeout(() => { messageDiv.style.display = 'none'; }, 5000);
+    showFriendlyMessage(messageDiv, text, type);
 }
 
 function escapeHtml(text) {

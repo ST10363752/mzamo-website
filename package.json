@@ -19,6 +19,9 @@
   },
   "homepage": "https://github.com/ST10363752/mzamo-website#readme",
   "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/cli": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
     "@supabase/supabase-js": "^2.117.3"
   }
 }

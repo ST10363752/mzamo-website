@@ -6,28 +6,41 @@ let programmes = [];
 let editingId = null;
 
 document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('programmesContainer');
+    if (!container) return;
+
     loadProgrammes();
     setupEventListeners();
 });
 
 function setupEventListeners() {
-    document.getElementById('showAddBtn').addEventListener('click', function() {
-        resetForm();
-        const form = document.getElementById('addForm');
-        form.classList.toggle('show');
-        this.textContent = form.classList.contains('show') ? 'Cancel' : 'Add New Programme';
-    });
+    const showAddBtn = document.getElementById('showAddBtn');
+    const cancelFormBtn = document.getElementById('cancelFormBtn');
+    const programmeForm = document.getElementById('programmeForm');
 
-    document.getElementById('cancelFormBtn').addEventListener('click', function() {
-        document.getElementById('addForm').classList.remove('show');
-        document.getElementById('showAddBtn').textContent = 'Add New Programme';
-        resetForm();
-    });
+    if (showAddBtn) {
+        showAddBtn.addEventListener('click', function() {
+            resetForm();
+            const form = document.getElementById('addForm');
+            form.classList.toggle('show');
+            this.textContent = form.classList.contains('show') ? 'Cancel' : 'Add New Programme';
+        });
+    }
 
-    document.getElementById('programmeForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        saveProgramme();
-    });
+    if (cancelFormBtn) {
+        cancelFormBtn.addEventListener('click', function() {
+            document.getElementById('addForm').classList.remove('show');
+            document.getElementById('showAddBtn').textContent = 'Add New Programme';
+            resetForm();
+        });
+    }
+
+    if (programmeForm) {
+        programmeForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveProgramme();
+        });
+    }
 }
 
 async function saveProgramme() {
@@ -35,34 +48,38 @@ async function saveProgramme() {
     const target = document.getElementById('programmeTarget').value.trim();
     const description = document.getElementById('programmeDescription').value.trim();
     const status = document.getElementById('programmeStatus').value;
+    const messageDiv = document.getElementById('formMessage');
 
-    if (!name || !target) {
-        showFormMessage('Please fill in all required fields.', 'error');
+    if (!name) {
+        showFriendlyMessage(messageDiv, 'Please enter a programme name.', 'error');
+        return;
+    }
+    if (name.length < 3) {
+        showFriendlyMessage(messageDiv, 'Programme name is too short.', 'error');
+        return;
+    }
+    if (!target) {
+        showFriendlyMessage(messageDiv, 'Please enter a target group.', 'error');
         return;
     }
 
     try {
         if (editingId === null) {
-            // INSERT
             const { error } = await window.supabaseClient
                 .from('programmes')
                 .insert([{ name, target_group: target, description, status }]);
-
             if (error) throw error;
-            showFormMessage('Programme added successfully.', 'success');
+            showFriendlyMessage(messageDiv, 'Programme added successfully.', 'success');
         } else {
-            // UPDATE
             const { error } = await window.supabaseClient
                 .from('programmes')
                 .update({ name, target_group: target, description, status, updated_at: new Date().toISOString() })
                 .eq('id', editingId);
-
             if (error) throw error;
-            showFormMessage('Programme updated successfully.', 'success');
+            showFriendlyMessage(messageDiv, 'Programme updated successfully.', 'success');
         }
 
         loadProgrammes();
-
         setTimeout(() => {
             document.getElementById('addForm').classList.remove('show');
             document.getElementById('showAddBtn').textContent = 'Add New Programme';
@@ -71,12 +88,13 @@ async function saveProgramme() {
 
     } catch (error) {
         console.error('Error saving programme:', error);
-        showFormMessage('Error saving programme. Please try again.', 'error');
+        showFriendlyMessage(messageDiv, getFriendlyError(error), 'error');
     }
 }
 
 async function loadProgrammes() {
     const container = document.getElementById('programmesContainer');
+    if (!container) return;
 
     try {
         const { data, error } = await window.supabaseClient
@@ -119,7 +137,7 @@ async function loadProgrammes() {
 
     } catch (error) {
         console.error('Error loading programmes:', error);
-        container.innerHTML = '<div class="empty-state"><h3>Error</h3><p>Could not load programmes.</p></div>';
+        container.innerHTML = '<div class="empty-state"><h3>Error</h3><p>' + getFriendlyError(error) + '</p></div>';
     }
 }
 
@@ -142,35 +160,31 @@ function editProgramme(id) {
 
 async function toggleStatus(id, currentStatus) {
     const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
-
     try {
         const { error } = await window.supabaseClient
             .from('programmes')
             .update({ status: newStatus, updated_at: new Date().toISOString() })
             .eq('id', id);
-
         if (error) throw error;
         loadProgrammes();
     } catch (error) {
         console.error('Error toggling status:', error);
-        alert('Error updating status.');
+        showGlobalError(getFriendlyError(error));
     }
 }
 
 async function deleteProgramme(id) {
     if (!confirm('Are you sure you want to delete this programme?')) return;
-
     try {
         const { error } = await window.supabaseClient
             .from('programmes')
             .delete()
             .eq('id', id);
-
         if (error) throw error;
         loadProgrammes();
     } catch (error) {
         console.error('Error deleting programme:', error);
-        alert('Error deleting programme.');
+        showGlobalError(getFriendlyError(error));
     }
 }
 
@@ -180,14 +194,6 @@ function resetForm() {
     editingId = null;
     document.getElementById('formTitle').textContent = 'Add New Programme';
     document.getElementById('formSubmitBtn').textContent = 'Add Programme';
-}
-
-function showFormMessage(text, type) {
-    const messageDiv = document.getElementById('formMessage');
-    messageDiv.textContent = text;
-    messageDiv.className = 'form-message ' + type;
-    messageDiv.style.display = 'block';
-    setTimeout(() => { messageDiv.style.display = 'none'; }, 4000);
 }
 
 function escapeHtml(text) {

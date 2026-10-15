@@ -6,11 +6,22 @@ let enquiries = [];
 let currentEnquiryIndex = -1;
 
 document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('enquiriesContainer');
+    if (!container) return;
+
     loadEnquiries();
+
+    const modal = document.getElementById('enquiryModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+    }
 });
 
 async function loadEnquiries() {
     const container = document.getElementById('enquiriesContainer');
+    if (!container) return;
 
     try {
         const { data, error } = await window.supabaseClient
@@ -27,7 +38,6 @@ async function loadEnquiries() {
             return;
         }
 
-        // Count stats
         const newCount = enquiries.filter(e => e.status === 'New' || !e.status).length;
         const progressCount = enquiries.filter(e => e.status === 'In Progress').length;
         const resolvedCount = enquiries.filter(e => e.status === 'Resolved').length;
@@ -75,7 +85,7 @@ async function loadEnquiries() {
 
     } catch (error) {
         console.error('Error loading enquiries:', error);
-        container.innerHTML = '<div class="empty-state"><h3>Error</h3><p>Could not load enquiries.</p></div>';
+        container.innerHTML = '<div class="empty-state"><h3>Error</h3><p>' + getFriendlyError(error) + '</p></div>';
     }
 }
 
@@ -92,7 +102,7 @@ function viewEnquiry(index) {
         '<div class="detail-row"><span class="label">Name</span><span class="value"><strong>' + escapeHtml(enquiry.name) + '</strong></span></div>' +
         '<div class="detail-row"><span class="label">Email</span><span class="value">' + escapeHtml(enquiry.email) + '</span></div>' +
         '<div class="detail-row"><span class="label">Phone</span><span class="value">' + escapeHtml(enquiry.phone || 'Not provided') + '</span></div>' +
-        '<div class="detail-row" style="flex-direction:column; align-items:flex-start; gap:5px;"><span class="label" style="width:100%;">Message</span><span class="value" style="background:#f8f9fa; padding:12px; border-radius:8px; width:100%; line-height:1.6;">' + escapeHtml(enquiry.message) + '</span></div>' +
+        '<div class="detail-row message"><span class="label">Message</span><span class="value">' + escapeHtml(enquiry.message) + '</span></div>' +
         '<div class="detail-row"><span class="label">Date</span><span class="value">' + date + '</span></div>' +
         '<div class="detail-row"><span class="label">Status</span><span class="value">' + (enquiry.status || 'New') + '</span></div>' +
         '<div class="modal-actions">' +
@@ -114,12 +124,11 @@ async function updateStatus(id, newStatus) {
             .from('enquiries')
             .update({ status: newStatus, updated_at: new Date().toISOString() })
             .eq('id', id);
-
         if (error) throw error;
         loadEnquiries();
     } catch (error) {
         console.error('Error updating status:', error);
-        alert('Error updating status.');
+        showGlobalError(getFriendlyError(error));
     }
 }
 
@@ -136,18 +145,13 @@ async function deleteEnquiry(id) {
             .from('enquiries')
             .delete()
             .eq('id', id);
-
         if (error) throw error;
         loadEnquiries();
     } catch (error) {
         console.error('Error deleting enquiry:', error);
-        alert('Error deleting enquiry.');
+        showGlobalError(getFriendlyError(error));
     }
 }
-
-document.getElementById('enquiryModal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
-});
 
 function escapeHtml(text) {
     const div = document.createElement('div');

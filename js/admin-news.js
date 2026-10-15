@@ -6,37 +6,63 @@ let newsItems = [];
 let editingId = null;
 
 document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('newsContainer');
+    if (!container) return;
+
     loadNews();
     setupEventListeners();
 });
 
 function setupEventListeners() {
-    document.getElementById('showAddBtn').addEventListener('click', function() {
-        resetForm();
-        const form = document.getElementById('addForm');
-        form.classList.toggle('show');
-        this.textContent = form.classList.contains('show') ? 'Cancel' : 'Add New Article';
-    });
+    const showAddBtn = document.getElementById('showAddBtn');
+    const cancelFormBtn = document.getElementById('cancelFormBtn');
+    const newsForm = document.getElementById('newsForm');
 
-    document.getElementById('cancelFormBtn').addEventListener('click', function() {
-        document.getElementById('addForm').classList.remove('show');
-        document.getElementById('showAddBtn').textContent = 'Add New Article';
-        resetForm();
-    });
+    if (showAddBtn) {
+        showAddBtn.addEventListener('click', function() {
+            resetForm();
+            const form = document.getElementById('addForm');
+            form.classList.toggle('show');
+            this.textContent = form.classList.contains('show') ? 'Cancel' : 'Add New Article';
+        });
+    }
 
-    document.getElementById('newsForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        saveNews();
-    });
+    if (cancelFormBtn) {
+        cancelFormBtn.addEventListener('click', function() {
+            document.getElementById('addForm').classList.remove('show');
+            document.getElementById('showAddBtn').textContent = 'Add New Article';
+            resetForm();
+        });
+    }
+
+    if (newsForm) {
+        newsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveNews();
+        });
+    }
 }
 
 async function saveNews() {
     const title = document.getElementById('newsTitle').value.trim();
     const content = document.getElementById('newsContent').value.trim();
     const status = document.getElementById('newsStatus').value;
+    const messageDiv = document.getElementById('formMessage');
 
-    if (!title || !content) {
-        showFormMessage('Please fill in all required fields.', 'error');
+    if (!title) {
+        showFriendlyMessage(messageDiv, 'Please enter an article title.', 'error');
+        return;
+    }
+    if (title.length < 3) {
+        showFriendlyMessage(messageDiv, 'Title is too short.', 'error');
+        return;
+    }
+    if (!content) {
+        showFriendlyMessage(messageDiv, 'Please enter the article content.', 'error');
+        return;
+    }
+    if (content.length < 10) {
+        showFriendlyMessage(messageDiv, 'Article content is too short.', 'error');
         return;
     }
 
@@ -46,18 +72,17 @@ async function saveNews() {
                 .from('news')
                 .insert([{ title, content, status }]);
             if (error) throw error;
-            showFormMessage('Article added successfully.', 'success');
+            showFriendlyMessage(messageDiv, 'Article added successfully.', 'success');
         } else {
             const { error } = await window.supabaseClient
                 .from('news')
                 .update({ title, content, status, updated_at: new Date().toISOString() })
                 .eq('id', editingId);
             if (error) throw error;
-            showFormMessage('Article updated successfully.', 'success');
+            showFriendlyMessage(messageDiv, 'Article updated successfully.', 'success');
         }
 
         loadNews();
-
         setTimeout(() => {
             document.getElementById('addForm').classList.remove('show');
             document.getElementById('showAddBtn').textContent = 'Add New Article';
@@ -66,12 +91,13 @@ async function saveNews() {
 
     } catch (error) {
         console.error('Error saving news:', error);
-        showFormMessage('Error saving article. Please try again.', 'error');
+        showFriendlyMessage(messageDiv, getFriendlyError(error), 'error');
     }
 }
 
 async function loadNews() {
     const container = document.getElementById('newsContainer');
+    if (!container) return;
 
     try {
         const { data, error } = await window.supabaseClient
@@ -118,7 +144,7 @@ async function loadNews() {
 
     } catch (error) {
         console.error('Error loading news:', error);
-        container.innerHTML = '<div class="empty-state"><h3>Error</h3><p>Could not load news.</p></div>';
+        container.innerHTML = '<div class="empty-state"><h3>Error</h3><p>' + getFriendlyError(error) + '</p></div>';
     }
 }
 
@@ -148,29 +174,26 @@ async function toggleStatus(id, currentStatus) {
             .from('news')
             .update({ status: newStatus, updated_at: new Date().toISOString() })
             .eq('id', id);
-
         if (error) throw error;
         loadNews();
     } catch (error) {
         console.error('Error toggling status:', error);
-        alert('Error updating status.');
+        showGlobalError(getFriendlyError(error));
     }
 }
 
 async function deleteNews(id) {
     if (!confirm('Are you sure you want to delete this article?')) return;
-
     try {
         const { error } = await window.supabaseClient
             .from('news')
             .delete()
             .eq('id', id);
-
         if (error) throw error;
         loadNews();
     } catch (error) {
         console.error('Error deleting article:', error);
-        alert('Error deleting article.');
+        showGlobalError(getFriendlyError(error));
     }
 }
 
@@ -180,14 +203,6 @@ function resetForm() {
     editingId = null;
     document.getElementById('formTitle').textContent = 'Add New Article';
     document.getElementById('formSubmitBtn').textContent = 'Add Article';
-}
-
-function showFormMessage(text, type) {
-    const messageDiv = document.getElementById('formMessage');
-    messageDiv.textContent = text;
-    messageDiv.className = 'form-message ' + type;
-    messageDiv.style.display = 'block';
-    setTimeout(() => { messageDiv.style.display = 'none'; }, 4000);
 }
 
 function escapeHtml(text) {

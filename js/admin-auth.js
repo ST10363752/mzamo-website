@@ -1,12 +1,11 @@
 // ============================================================
-// MZAMO CHILD GUIDANCE - ADMIN AUTHENTICATION (SUPABASE)
+// MZAMO CHILD GUIDANCE - ADMIN AUTHENTICATION (With Error Handling)
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('adminLoginForm');
     const loginMessage = document.getElementById('loginMessage');
 
-    // ===== LOGIN FUNCTIONALITY =====
     if (loginForm) {
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -14,62 +13,73 @@ document.addEventListener('DOMContentLoaded', function() {
             const email = document.getElementById('adminEmail').value.trim();
             const password = document.getElementById('adminPassword').value.trim();
 
-            if (!email || !password) {
-                showMessage('Please enter both email and password.', 'error');
+            if (!email) {
+                showFriendlyMessage(loginMessage, 'Please enter your email address.', 'error');
+                return;
+            }
+            if (!password) {
+                showFriendlyMessage(loginMessage, 'Please enter your password.', 'error');
                 return;
             }
 
-            // Show loading
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                showFriendlyMessage(loginMessage, 'Please enter a valid email address.', 'error');
+                return;
+            }
+
             const submitBtn = loginForm.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
             submitBtn.textContent = 'Logging in...';
             submitBtn.disabled = true;
 
             try {
-                // Sign in with Supabase Auth
                 const { data, error } = await window.supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: password
                 });
 
-                if (error) {
-                    console.error('Login error:', error);
-                    showMessage('Invalid email or password. Please try again.', 'error');
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
-                    return;
+                if (error) throw error;
+
+                const { data: factorsData } = await window.supabaseClient.auth.mfa.listFactors();
+
+                if (factorsData && factorsData.totp && factorsData.totp.length > 0) {
+                    const { data: aalData } = await window.supabaseClient.auth.mfa.getAuthenticatorAssuranceLevel();
+
+                    if (aalData.currentLevel === 'aal2') {
+                        showFriendlyMessage(loginMessage, 'Login successful. Redirecting...', 'success');
+                        setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 800);
+                    } else {
+                        showFriendlyMessage(loginMessage, 'Please enter your 2FA code...', 'success');
+                        setTimeout(() => { window.location.href = 'admin-2fa-verify.html'; }, 800);
+                    }
+                } else {
+                    showFriendlyMessage(loginMessage, 'Setting up 2FA...', 'success');
+                    setTimeout(() => { window.location.href = 'admin-2fa-setup.html'; }, 800);
                 }
 
-                console.log('Login successful:', data.user.email);
-                showMessage('Login successful! Redirecting...', 'success');
-
-                setTimeout(function() {
-                    window.location.href = 'admin-dashboard.html';
-                }, 1000);
-
             } catch (err) {
-                console.error('Error:', err);
-                showMessage('An unexpected error occurred.', 'error');
+                console.error('Login error:', err);
+                showFriendlyMessage(loginMessage, getFriendlyError(err), 'error');
+                document.getElementById('adminPassword').value = '';
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
             }
         });
     }
 
-    // ===== CHECK AUTH STATUS ON ADMIN PAGES =====
     checkAuth();
 
-    // ===== LOGOUT FUNCTIONALITY =====
     const logoutBtn = document.getElementById('logoutBtn') || document.getElementById('adminLogoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async function(e) {
             e.preventDefault();
             await window.supabaseClient.auth.signOut();
+            sessionStorage.removeItem('mfaVerified');
             window.location.href = 'admin-login.html';
         });
     }
 
-    // ===== AUTH CHECK FUNCTION =====
     async function checkAuth() {
         const currentPage = window.location.pathname;
         const adminPages = [
@@ -81,8 +91,9 @@ document.addEventListener('DOMContentLoaded', function() {
         ];
 
         const isAdminPage = adminPages.some(page => currentPage.includes(page));
+        if (!isAdminPage) return;
 
-        if (isAdminPage) {
+        try {
             const { data: { session } } = await window.supabaseClient.auth.getSession();
 
             if (!session) {
@@ -90,22 +101,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Display admin name
+            const { data: factorsData } = await window.supabaseClient.auth.mfa.listFactors();
+            if (factorsData && factorsData.totp && factorsData.totp.length > 0) {
+                const { data: aalData } = await window.supabaseClient.auth.mfa.getAuthenticatorAssuranceLevel();
+                if (aalData.currentLevel !== 'aal2') {
+                    window.location.href = 'admin-2fa-verify.html';
+                    return;
+                }
+            }
+
             const nameSpan = document.getElementById('adminName');
             if (nameSpan && session.user) {
                 nameSpan.textContent = session.user.email.split('@')[0];
             }
-
-            console.log('Admin authenticated:', session.user.email);
-        }
-    }
-
-    // ===== HELPER FUNCTION =====
-    function showMessage(text, type) {
-        if (loginMessage) {
-            loginMessage.textContent = text;
-            loginMessage.className = 'form-message ' + type;
-            loginMessage.style.display = 'block';
+        } catch (error) {
+            console.error('Auth check error:', error);
         }
     }
 });
